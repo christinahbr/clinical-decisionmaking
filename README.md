@@ -91,6 +91,7 @@ purrr
 
 You can install all required packages with:
 
+```
 install.packages(c(
   "tidyverse", "janitor", "psych", "broom", "car", "survey",
   "ggplot2", "patchwork", "ggrepel", "scales", "viridis",
@@ -98,6 +99,7 @@ install.packages(c(
   "readxl", "writexl", "haven", "here",
   "forcats", "stringr", "purrr"
 ))
+```
 
 ## Citation
 
