@@ -1,0 +1,235 @@
+---
+title: "Results Compilation"
+date: "2024-08-16"
+output:
+  html_document:
+    toc: true
+    number_sections: true
+    toc_float: true
+    toc_depth: 5
+    theme: cosmo
+    highlight: kate
+---
+
+```{r setup, include = FALSE}
+
+# Load necessary libraries
+library(knitr)
+library(gt)
+library(here)
+
+# Set up knitr options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  autodep = TRUE,
+  cache = FALSE,
+  cache.comments = FALSE
+)
+options(np.messages = FALSE)
+
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_knit$set(self.contained = FALSE)
+options(knitr.graphics.error = FALSE)
+
+```
+
+# Table One
+
+```{r include = FALSE}
+source(file.path("code", "preliminary analyses", "04_table_one.R"))
+```
+
+```{r echo = FALSE}
+table_one
+```
+
+# Distributions of Information Source Use and Quality  {.tabset}
+
+```{r include = FALSE}
+source(file.path("code", "preliminary analyses", "05_eda.R"))
+```
+
+## Overall
+
+```{r, echo = FALSE, fig.height = 18, fig.width = 8, message = FALSE}
+overview_plots[[1]]
+
+overview_plots[[2]]
+
+overview_plots[[3]]
+```
+
+## By Provider Type
+
+```{r, echo = FALSE, fig.height = 18, fig.width = 8, message = FALSE}
+provtype_plots[[1]]
+
+provtype_plots[[2]]
+
+provtype_plots[[3]]
+
+```
+
+# Distributions of Organizational Attitudes  {.tabset}
+
+## Overall
+
+```{r, echo = FALSE, fig.height = 9, fig.width = 8, message = FALSE}
+org_attitudes
+
+```
+
+## By Provider Type
+
+```{r, echo = FALSE, fig.height = 9, fig.width = 8, message = FALSE}
+org_attitudes_by_provtype
+
+```
+
+```{r include = FALSE}
+source(file.path("code", "preliminary analyses", "06_pca.R"))
+```
+
+# Principal Component Analysis  {.tabset}
+
+## Variable Loadings
+
+```{r echo = FALSE, fig.height = 10, fig.width = 11}
+plots$faceted
+
+```
+
+## Scree Plot
+
+```{r echo = FALSE, message = FALSE,  fig.height = 5, fig.width = 5}
+scree_plot_rotated
+
+```
+
+## Heatmap
+
+Principal Component Analysis of Clinician Information Sources During the Early COVID-19 Pandemic 
+
+We relied on four dimensions, corresponding to: (1) professional networks (e.g., ED leadership, hospital leadership), (2) news and social media (e.g., Facebook, Twitter/X), (3) academic publications (e.g., peer-reviewed journals, society communications), and (4) blogs and podcasts. Only factor loadings greater than 0.5 are noted, representing strong associations between information sources and their respective components. 
+
+```{r heatmap, echo=FALSE, out.width="80%", fig.align='center'}
+
+knitr::include_graphics(normalizePath(here("plots", "heatmap_rotated.png")))
+# knitr::include_graphics(here("plots", "heatmap_rotated.png"))
+
+# heatmap_html
+```
+
+# Adoption Patterns
+
+## Adoption of COVID-19 Innovations by Provider Type and Decision-Making Discretion
+
+Number and percentage of clinicians who adopted each innovation, shown overall and by provider type (nurses vs. physicians). Results are presented for all clinicians and for the subset with decision-making discretion for each innovation.
+
+```{r echo = FALSE, width = 6, height = 5}
+source(file.path("code", "utils", "05_adoption_table.R"))
+
+adoption_table_pretty %>%
+  gt() %>%
+  tab_header(
+    title = "Innovation Adoption by Provider Type",
+    subtitle = "Number and percentage of adopters"
+  ) %>%
+  cols_label(
+    innovation = "Innovation",
+    subset = "Sample",
+    MD = "Physicians",
+    RN = "Nurses",
+    Total = "Total"
+  ) %>%
+  tab_spanner(
+    label = "Clinician Type",
+    columns = c(MD, RN)
+  ) %>%
+  opt_row_striping() %>%
+  tab_options(
+    table.font.size = px(12)
+  )
+
+```
+
+## Clinician Ratings of Information Access and Reliability
+
+Clinician ratings of information use and perceived reliability across source categories during early COVID-19 (Mar–Jun 2020). Bars show means by clinician type (MD vs. RN) with 95% CIs; percentages indicate the share who used at least one source per category. Asterisks denote significant differences between physicians (MDs) and nurses (RNs) after Holm correction for multiple comparisons (*** p < 0.001, ** p < 0.01, * p < 0.05). 
+
+```{r, echo = FALSE, out.width="120%", fig.align='center'}
+
+knitr::include_graphics(here("plots", "usage_and_quality.png"))
+# usage_and_quality
+```
+
+## Overlap in Innovation Implementation
+
+Venn diagram showing the number and percentage of clinicians with discretion in decision-making who reported implementing PPE reuse, high-flow oxygen (HFO), and ivermectin (IV) during the early COVID-19 pandemic. Overlapping regions indicate clinicians who implemented more than one innovation. Counts and percentages are displayed within each region. Bold labels identify the three innovation categories.
+
+```{r echo = FALSE, out.width="60%", fig.align='center'}
+
+# source(file.path("code", "utils", "05_venn_plots.R"))
+knitr::include_graphics(here("plots", "implementation_venn.png"))
+
+```
+
+# Logistic Results   {.tabset}
+
+## PPE Reuse
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+# Run the logistic regression script silently
+source(file.path("code", "preliminary analyses", "07_logistic_models.R"))
+```
+
+```{r echo = FALSE}
+present_or_gt(ppe_or_data, "Adjusted Odds Ratios (all)") %>%
+  tab_options(
+    table.font.size = px(12)
+  )
+
+```
+
+## High Flow Oxygen
+
+```{r echo = FALSE}
+present_or_gt(hfo_or_data, "Adjusted Odds Ratios (all)") %>%
+  tab_options(
+    table.font.size = px(12)
+  )
+```
+
+## Ivermectin
+
+```{r echo = FALSE}
+present_or_gt(iv_or_data, "Adjusted Odds Ratios (all)") %>%
+  tab_options(
+    table.font.size = px(12)
+  )
+```
+
+# Predictors of Innovation Adoption among Clinicians 
+
+Forest plot showing adjusted odds ratios (aORs) and 95% confidence intervals for predictors of clinicians’ decisions to suggest or implement three COVID-19–related practices: PPE reuse, high-flow oxygen, and ivermectin. “Perceived Flexibility” reflects increased flexibility among nurses. “Physician (vs. Nurse) reflects the impact of being a physician rather than nurse among clinicians with some flexibility.  “Physician × Flexibility” indicates whether the association between perceived flexibility and adoption differed for physicians compared with nurses. For PPE reuse, an aOR of 4.38 (>1) shows that while greater flexibility reduced reuse for both groups, the drop was steeper for nurses than for physicians. Significance: *** p < 0.001, ** p < 0.01, * p < 0.05, † p < 0.10. 
+
+```{r fig.forest, echo=FALSE, out.width='120%', fig.align='center'}
+# final
+knitr::include_graphics(here("plots", "forest.png"))
+```
+
+# Clinician-Reported Justifications for Implementing COVID-19 Innovations 
+
+```{r, include = FALSE}
+source(file.path("code", "preliminary analyses", "08_innovation_factors.R"))
+```
+
+Bar chart illustrating the percentage of clinicians with decision-making flexibility who cited each factor as influencing their decision to implement the innovation, grouped by adopters versus non-adopters. Significant differences indicate that adopters were more likely to cite the justification than non-adopters, with the exception that “Evidence from medical literature” was more commonly cited by those who did not suggest or prescribe ivermectin (76%) compared with those who did (59%) Asterisks indicate statistically significant differences between groups after multiple comparison correction (*** p < 0.001, ** p < 0.01, * p < 0.05). 
+
+```{r}
+# clinician_justifications
+# file.exists(file.path("plots", "justifications_for_adoption.png"))
+knitr::include_graphics(here("plots", "justifications_for_adoption.png"))
+```
