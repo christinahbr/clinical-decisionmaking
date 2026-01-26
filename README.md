@@ -1,10 +1,12 @@
-# Information Sources and Adoption of Emerging Care Practices Among Emergency Clinicians During the COVID-19 Pandemic
+# Survey Analysis Code: Information Sources and Adoption of Care Practices During COVID-19
 
-This repository contains the analysis code for a national survey study examining how emergency department (ED) clinicians used information sources early in the COVID-19 pandemic, and how those sources were associated with adoption of emerging clinical practices.
+## Overview
 
-The goal of this repository is to support transparency, reproducibility, and reuse of the analytic approach.
+During the early COVID-19 pandemic, emergency clinicians had to make high-stakes care decisions with limited and rapidly changing evidence. This project examines where clinicians turned for information during that period and how different information sources were associated with the adoption of emerging care practices. The analysis focuses on how clinicians’ information environments shaped adoption of practices before strong clinical evidence was available.
 
-## Study Overview
+This repository contains the analysis code for a national survey study examining how emergency department (ED) clinicians used information sources early in the COVID-19 pandemic, and how those sources were associated with adoption of emerging clinical practices. The goal of this repository is to support transparency, reproducibility, and reuse of the analytic approach.
+
+## Study goals
 
 Early in the COVID-19 pandemic, doctors and nurses had to make care decisions under extreme uncertainty. Guidance changed rapidly, and strong clinical evidence was often unavailable.
 
@@ -14,13 +16,13 @@ In this study, we asked:
 
 Using survey data from over 1,600 U.S. emergency physicians and nurses, we examined how reliance on different information sources related to adoption of three early-pandemic practices: PPE reuse, high-flow oxygen, and ivermectin. We also examined the role of clinician decision-making autonomy.
 
-## Key Findings
+## Key findings
 
 Clinicians relied on distinct clusters of information sources, including professional networks and authorities, academic publications, news and social media, and blogs and podcasts.
 
 Professional networks and academic literature were more strongly associated with adoption of practices later supported by evidence (e.g., high-flow oxygen). News and social media use was associated with higher adoption of practices that later showed limited or mixed evidence (e.g., ivermectin, PPE reuse). Greater decision-making autonomy was associated with lower adoption of PPE reuse and ivermectin and higher adoption of high-flow oxygen among physicians.
 
-## Code Overview
+## Code overview
 
 This code processes raw survey data from emergency department clinicians to produce an analysis-ready dataset and replicate the study’s primary findings. The pipeline first filters respondents to eligible cases and cleans and recodes demographic and geographic variables, including derivation of practice setting classifications. It then constructs composite measures of information source use and related constructs, and applies principal component analysis with varimax rotation to summarize patterns of information use and visualize factor loadings. Using these derived measures, the code fits multivariable logistic regression models to examine associations between information environments, decision-making autonomy, and adoption of early-pandemic clinical practices, restricting analyses to clinicians with at least some flexibility to make care decisions. Finally, the pipeline generates publication-ready tables and figures, including descriptive summaries, PCA visualizations, and adjusted odds ratio plots.
 
@@ -43,9 +45,9 @@ Please note that raw survey data are not publicly available due to confidentiali
 Running the full pipeline will generate:
 * data/clean_data.rds (analysis-ready dataset)
 * results/table_one.docx (Table 1 demographics)
-* figures including PCA loadings, adjusted odds ratio forest plots, and justification bar charts
+* figures including PCA loadings, adjusted odds ratio forest plots, and bar charts
 
-## How to Run the Analysis
+## How to run the analysis
 
 After cloning the repository and installing required packages, run the scripts sequentially. The analysis assumes the working directory is set to the project root.
 
@@ -54,40 +56,52 @@ After cloning the repository and installing required packages, run the scripts s
 All analyses were conducted in R (≥ 4.2). The following R packages are required to run the full pipeline:
 
 ### Data manipulation and tidying
+```
 tidyverse
 janitor
+```
 
 ### Statistical analysis
+```
 psych        # PCA, factor analysis, reliability
 stats        # Base statistical models (glm, PCA utilities)
 broom        # Tidying model outputs
 car          # Model utilities
 survey       # Survey-related helpers (if applicable to extensions)
+```
 
 ### Visualization
+```
 ggplot2
 patchwork
 ggrepel
 scales
 viridis
+```
 
 ### Tables and reporting
+```
 gtsummary
 gt
 flextable
 officer
 kableExtra
+```
 
 ### File I/O
+```
 readxl
 writexl
 haven
 here
+```
 
 ### Utility / helpers
+```
 forcats
 stringr
 purrr
+```
 
 You can install all required packages with:
 
